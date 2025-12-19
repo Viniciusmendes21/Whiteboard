@@ -1,0 +1,190 @@
+﻿<div class="toolbar">
+  <div class="toolbar-section">
+    <h2 class="toolbar-title">🎨 Whiteboard</h2>
+  </div>
+
+  <div class="toolbar-section tools-section">
+    <button
+      *ngFor="let tool of tools"
+      [class.active]="currentTool === tool.type"
+      (click)="selectTool(tool.type)"
+      [title]="tool.label"
+      class="tool-button"
+    >
+      <span class="tool-icon">{{ tool.icon }}</span>
+    </button>
+  </div>
+
+  <div class="toolbar-section colors-section">
+    <div class="color-picker">
+      <label>Contorno:</label>
+      <input
+        type="color"
+        [value]="strokeColor"
+        (input)="onStrokeColorChange($any($event.target).value)"
+      />
+    </div>
+    <div class="color-picker">
+      <label>Preenchimento:</label>
+      <input
+        type="color"
+        [value]="fillColor"
+        (input)="onFillColorChange($any($event.target).value)"
+      />
+    </div>
+    <div class="color-picker text-color-picker">
+      <label>Cor do texto:</label>
+      <input
+        type="color"
+        [value]="textColor"
+        (input)="onTextColorChange($any($event.target).value)"
+      />
+    </div>
+    <div class="size-inputs">
+      <label>Largura:</label>
+      <input
+        type="number"
+        min="1"
+        [value]="selectedWidth"
+        (input)="onWidthChange(+$any($event.target).value)"
+      />
+      <label>Altura:</label>
+      <input
+        type="number"
+        min="1"
+        [value]="selectedHeight"
+        (input)="onHeightChange(+$any($event.target).value)"
+      />
+    </div>
+    <div class="stroke-width">
+      <label>Espessura:</label>
+      <input
+        type="range"
+        min="1"
+        max="10"
+        [value]="strokeWidth"
+        (input)="onStrokeWidthChange(+$any($event.target).value)"
+      />
+      <span>{{ strokeWidth }}px</span>
+    </div>
+    <div class="font-controls">
+      <label>Tamanho:</label>
+      <input
+        type="number"
+        min="8"
+        max="72"
+        [value]="fontSize"
+        (input)="onFontSizeChange(+$any($event.target).value)"
+      />
+      <label>Fonte:</label>
+      <select [value]="fontFamily" (change)="onFontFamilyChange($any($event.target).value)">
+        <option>Arial</option>
+        <option>Segoe UI</option>
+        <option>Roboto</option>
+        <option>Inter</option>
+        <option>Georgia</option>
+        <option>Courier New</option>
+      </select>
+      <button
+        class="toggle"
+        [class.active]="fontWeight === 'bold'"
+        (click)="toggleBold()"
+        title="Negrito"
+      >B</button>
+      <button
+        class="toggle"
+        [class.active]="fontStyle === 'italic'"
+        (click)="toggleItalic()"
+        title="Itálico"
+      ><i>I</i></button>
+    </div>
+  </div>
+
+  <div class="toolbar-section actions-section">
+    <button (click)="undo()" [disabled]="!canUndo" title="Desfazer (Ctrl+Z)">
+      ↶ Desfazer
+    </button>
+    <button (click)="redo()" [disabled]="!canRedo" title="Refazer (Ctrl+Y)">
+      ↷ Refazer
+    </button>
+    <button (click)="zoomIn()" title="Aumentar Zoom">🔍+</button>
+    <button (click)="zoomOut()" title="Diminuir Zoom">🔍-</button>
+    <button (click)="resetZoom()" title="Resetar Zoom">100%</button>
+    <button (click)="deleteSelected()" title="Deletar Selecionados (Delete)">
+      🗑️ Deletar
+    </button>
+    <button (click)="clearCanvas()" title="Limpar Canvas">
+      🗑️ Limpar Tudo
+    </button>
+  </div>
+
+  <div class="toolbar-section rotation-section">
+    <button (click)="rotateLeft()" title="Rotacionar -15°">⟲ -15°</button>
+    <button (click)="rotateRight()" title="Rotacionar +15°">⟳ +15°</button>
+  </div>
+
+  <div class="toolbar-section layer-section">
+    <button (click)="bringToFront()" title="Trazer para frente">⬆ Frente</button>
+    <button (click)="sendToBack()" title="Enviar para trás">⬇ Trás</button>
+  </div>
+
+  <div class="toolbar-section group-section">
+    <button (click)="group()" title="Agrupar selecionados">🧩 Agrupar</button>
+    <button (click)="ungroup()" title="Desagrupar">🧩 Desagrupar</button>
+  </div>
+
+  <div class="toolbar-section align-section">
+    <button (click)="align('left')" title="Alinhar à esquerda">⟸</button>
+    <button (click)="align('center')" title="Centralizar horizontal">⇤⇥</button>
+    <button (click)="align('right')" title="Alinhar à direita">⟹</button>
+    <button (click)="align('top')" title="Alinhar ao topo">⇑</button>
+    <button (click)="align('middle')" title="Centralizar vertical">⇞⇟</button>
+    <button (click)="align('bottom')" title="Alinhar ao rodapé">⇓</button>
+  </div>
+
+  <div class="toolbar-section distribute-section">
+    <button (click)="distribute('horizontal')" title="Distribuir horizontal">⟷</button>
+    <button (click)="distribute('vertical')" title="Distribuir vertical">↕</button>
+  </div>
+
+  <div class="toolbar-section template-section">
+    <button (click)="applyTemplate('sticky-notes')" title="Inserir notas adesivas">📝 Notas</button>
+    <button (click)="applyTemplate('flow')" title="Inserir mini fluxograma">🧭 Fluxo</button>
+  </div>
+
+  <div class="toolbar-section grid-section">
+    <label class="checkbox">
+      <input type="checkbox" [checked]="snapToGrid" (change)="toggleSnapToGrid()" />
+      Snap to grid
+    </label>
+    <div class="grid-size">
+      <label>Tamanho da grade:</label>
+      <input
+        type="number"
+        min="5"
+        max="200"
+        [value]="gridSize"
+        (input)="onGridSizeChange(+$any($event.target).value)"
+      />
+      <span>{{ gridSize }}px</span>
+    </div>
+  </div>
+
+  <div class="toolbar-section export-section">
+    <button (click)="exportToPNG()" title="Exportar como PNG">
+      💾 PNG
+    </button>
+    <button (click)="exportToJSON()" title="Exportar como JSON">
+      💾 JSON
+    </button>
+    <button (click)="importFromJSON()" title="Importar JSON">
+      📂 Importar
+    </button>
+  </div>
+
+  <div class="toolbar-section theme-section">
+    <button (click)="toggleTheme()" title="Alternar tema">
+      {{ theme === 'light' ? '🌙 Dark' : '☀️ Light' }}
+    </button>
+  </div>
+</div>

@@ -1,0 +1,25 @@
+﻿<div class="canvas-container">
+  <canvas
+    #canvas
+    (mousedown)="onMouseDown($event)"
+    (mousemove)="onMouseMove($event)"
+    (mouseup)="onMouseUp($event)"
+  ></canvas>
+
+  <textarea
+    *ngIf="editingElementId"
+    #textEditor
+    class="text-editor"
+    [ngStyle]="{
+      top: editPosition.top + 'px',
+      left: editPosition.left + 'px',
+      width: editPosition.width + 'px',
+      height: editPosition.height + 'px'
+    }"
+    [(ngModel)]="editValue"
+    (keydown)="onInlineEditKeydown($event)"
+    (blur)="commitInlineEdit()"
+    (mousedown)="$event.stopPropagation()"
+    spellcheck="false"
+  ></textarea>
+</div>

@@ -1,0 +1,17 @@
+﻿<div class="ai-chat">
+  <div class="ai-chat__header">
+    <span>🤖 Assistente IA (beta)</span>
+    <button class="link" (click)="clearPrompt()" title="Limpar entrada">Limpar</button>
+  </div>
+
+  <textarea
+    [(ngModel)]="prompt"
+    placeholder="Descreva o fluxo: ex. Início -> Autenticar -> Decisão -> Aprovar -> Fim"
+    rows="4"
+  ></textarea>
+
+  <div class="ai-chat__actions">
+    <button (click)="generate()" [disabled]="isBusy">{{ isBusy ? 'Gerando...' : 'Gerar diagrama' }}</button>
+    <span class="ai-chat__message" *ngIf="message">{{ message }}</span>
+  </div>
+</div>
